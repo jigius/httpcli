@@ -1,0 +1,21 @@
+{
+    "name": "jigius/httpcli",
+    "description": "An yet another trivial HTTP client. The goal is its realization with of Elegant Objects conceptions by Egor Bugaenko.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Jigius\\Httpcli\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "jigius",
+            "email": "jigius@gmail.com"
+        }
+    ],
+    "require": {
+      "ext-json": "*",
+      "ext-curl": "*"
+    }
+}
