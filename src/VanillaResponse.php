@@ -1,34 +1,36 @@
 <?php
 declare(strict_types=1);
 
-namespace Jigius\Httpcli\Response;
+namespace Jigius\Httpcli;
 
-use Jigius\Httpcli\ResponseInterface;
+use LogicException;
 
 /**
  * Class VanillaResponse
- * @package Jigius\Httpcli\Response
+ * @package Jigius\Httpcli
  */
 final class VanillaResponse implements ResponseInterface
 {
     /**
-     * @var mixed
+     * @var string|null
      */
-    private array $i;
+    private ?string $i;
 
     /**
      * VanillaResponse constructor.
      */
     public function __construct()
     {
-        $this->i = [];
     }
 
     /**
-     * @return mixed|string
+     * @return string
      */
-    public function content()
+    public function content(): string
     {
+        if (!isset($this->i)) {
+            throw new LogicException("is not assigned yet");
+        }
         return $this->i;
     }
 
@@ -38,8 +40,8 @@ final class VanillaResponse implements ResponseInterface
      */
     public function with($input): ResponseInterface
     {
-        $obj = new self();
-        $obj->i = $input;
-        return $obj;
+        $that = new self();
+        $that->i = $input;
+        return $that;
     }
 }
