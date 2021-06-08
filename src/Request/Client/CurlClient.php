@@ -48,6 +48,8 @@ final class CurlClient implements ClientInterface
         $this->hdrs = $headers;
         $this->opts = $options;
         $this->params = [];
+        $this->h = "";
+        $this->uri = "";
     }
 
     /**
@@ -157,9 +159,14 @@ final class CurlClient implements ClientInterface
     private function url(): string
     {
         return
-            $this->h .
-            $this->uri .
-            (strpos("?", $this->uri)? "&": "?") .
-            http_build_query($this->params);
+            implode(
+                "",
+                [
+                    $this->h,
+                    $this->uri,
+                    strpos($this->uri, "?") >=0? "&": "?",
+                    http_build_query($this->params)
+                ]
+            );
     }
 }
