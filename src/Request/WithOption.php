@@ -17,9 +17,9 @@ final class WithOption implements RequestInterface
     private RequestInterface $orig;
 
     /**
-     * @var string
+     * @var mixed
      */
-    private string $name;
+    private $name;
 
     /**
      * @var mixed
@@ -29,10 +29,10 @@ final class WithOption implements RequestInterface
     /**
      * WithOption constructor.
      * @param RequestInterface $req
-     * @param string $name
+     * @param mixed $name
      * @param mixed $val
      */
-    public function __construct(RequestInterface $req, string $name, $val)
+    public function __construct(RequestInterface $req, $name, $val)
     {
         $this->orig = $req;
         $this->name = $name;
