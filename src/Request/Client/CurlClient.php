@@ -68,7 +68,7 @@ final class CurlClient implements ClientInterface
     /**
      * @inheritDoc
      */
-    public function withHeader(string $header): ClientInterface
+    public function withHeader(string $header): self
     {
         $obj = $this->blueprinted();
         $obj->hdrs[] = $header;
@@ -78,7 +78,7 @@ final class CurlClient implements ClientInterface
     /**
      * @inheritDoc
      */
-    public function withOption(string $name, $val): ClientInterface
+    public function withOption($name, $val): self
     {
         $obj = $this->blueprinted();
         $obj->opts[$name] = $val;
@@ -88,7 +88,7 @@ final class CurlClient implements ClientInterface
     /**
      * @inheritDoc
      */
-    public function withUriParam(string $name, $val): ClientInterface
+    public function withUriParam(string $name, $val): self
     {
         $obj = $this->blueprinted();
         $obj->params[$name] = $val;
@@ -98,7 +98,7 @@ final class CurlClient implements ClientInterface
     /**
      * @inheritDoc
      */
-    public function withUri(string $uri): ClientInterface
+    public function withUri(string $uri): self
     {
         $obj = $this->blueprinted();
         $obj->uri = $uri;
@@ -108,7 +108,7 @@ final class CurlClient implements ClientInterface
     /**
      * @inheritDoc
      */
-    public function withHostname(string $hostname): ClientInterface
+    public function withHostname(string $hostname): self
     {
         $obj = $this->blueprinted();
         $obj->h = $hostname;
