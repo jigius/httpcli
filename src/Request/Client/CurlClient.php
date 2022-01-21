@@ -164,7 +164,7 @@ final class CurlClient implements ClientInterface
                 [
                     $this->h,
                     $this->uri,
-                    strpos($this->uri, "?") >=0? "&": "?",
+                    strpos($this->uri, "?") === false? "?": "&",
                     http_build_query($this->params)
                 ]
             );
