@@ -1,9 +1,6 @@
 <?php
-declare(strict_types=1);
 
 namespace Jigius\Httpcli;
-
-use Jigius\Httpcli\Request\ClientInterface;
 
 /**
  * Interface RequestInterface
@@ -12,8 +9,7 @@ use Jigius\Httpcli\Request\ClientInterface;
 interface RequestInterface
 {
     /**
-     * @param ClientInterface $client
-     * @return string
+     * @return ResponseInterface
      */
-    public function sent(ClientInterface $client): string;
+    public function processed(): ResponseInterface;
 }
