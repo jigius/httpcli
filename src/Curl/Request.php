@@ -121,7 +121,6 @@ final class Request implements RequestInterface
         return $that;
     }
     
-    
     /**
      * @inheritDoc
      */
@@ -136,10 +135,23 @@ final class Request implements RequestInterface
         $ch = $this->i['curlHandler'];
         if (!empty($this->hdrs)) {
             $this->curlSetOpt($ch, CURLOPT_HTTPHEADER, $this->hdrs);
-            $this->curlSetOpt($ch, CURLOPT_HEADER, false);
+            $this->curlSetOpt($ch, CURLOPT_HEADER, true);
             $this->curlSetOpt($ch, CURLOPT_RETURNTRANSFER, true);
         }
         $this->curlSetOpt($ch, CURLOPT_URL, $this->url());
+        $hdrsResp = [];
+        $this->curlSetOpt($ch, CURLOPT_HEADERFUNCTION,
+            function($curl, $header) use (&$hdrsResp) {
+                $len = strlen($header);
+                $header = explode(':', $header, 2);
+                if (count($header) < 2) {
+                    /* ignoring invalid headers */
+                    return $len;
+                }
+                $headers[strtolower(trim($header[0]))][] = trim($header[1]);
+                return $len;
+            }
+        );
         if (($output = curl_exec($ch)) === false) {
             throw
                 new RuntimeException(
@@ -151,8 +163,14 @@ final class Request implements RequestInterface
                     )
                 );
         }
-        curl_close($ch);
-        return $this->resp->withContent($output);
+        return
+            $this
+                ->resp
+                ->withContent($output)
+                ->withHeaders($hdrsResp)
+                ->withCode(
+                    curl_getinfo($ch, CURLINFO_HTTP_CODE)
+                );
     }
     
     /**
