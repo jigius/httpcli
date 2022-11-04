@@ -40,10 +40,9 @@ interface HeadersInterface
     /**
      * Returns all headers with a given name
      * @param string $name
-     * @param HeadersInterface $hdrs
      * @return HeadersInterface
      */
-    public function pulled(string $name, HeadersInterface $hdrs): HeadersInterface;
+    public function pulled(string $name): HeadersInterface;
     
     /**
      * Returns the first header with a given name

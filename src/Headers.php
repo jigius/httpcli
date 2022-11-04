@@ -58,8 +58,9 @@ final class Headers implements HeadersInterface
      * @inheritDoc
      * @throws UnexpectedValueException
      */
-    public function pulled(string $name, HeadersInterface $hdrs): HeadersInterface
+    public function pulled(string $name): HeadersInterface
     {
+        $hdrs = new self();
         if (!$this->existed($name)) {
             throw new UnexpectedValueException("name=`$name` is unknown");
         }
@@ -80,7 +81,7 @@ final class Headers implements HeadersInterface
         if (!$this->existed($h->name())) {
             $that->idx[$key] = [];
         }
-        $that->idx[$key][] = count($this->coll) - 1;
+        $that->idx[$key][] = count($this->coll);
         return $that;
     }
     
@@ -116,6 +117,7 @@ final class Headers implements HeadersInterface
     {
         $that = new self();
         $that->coll = $this->coll;
+        $that->idx = $this->idx;
         return $that;
     }
     
