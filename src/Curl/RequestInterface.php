@@ -2,12 +2,12 @@
 
 namespace Jigius\Httpcli\Curl;
 
-use Jigius\Httpcli as Type;
+use Jigius\Httpcli\RequestInterface as RequestType;
 
 /**
  * Contract for a instance that is capable to do requests with using of CURL-library
  */
-interface RequestInterface extends Type\RequestInterface
+interface RequestInterface extends RequestType
 {
     /**
      * Defines headers for URL is going to request
@@ -70,5 +70,5 @@ interface RequestInterface extends Type\RequestInterface
      * @param $handler resource
      * @return RequestInterface
      */
-    public function withCurlHdlr($handler): RequestInterface;
+    public function withHandler($handler): RequestInterface;
 }

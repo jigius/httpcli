@@ -2,6 +2,7 @@
 
 namespace Jigius\Httpcli\Curl;
 
+use Jigius\Httpcli\HeadersInterface;
 use LogicException;
 use InvalidArgumentException;
 
@@ -49,17 +50,17 @@ final class Response implements ResponseInterface
     /**
      * @inheritDoc
      */
-    public function withCode(int $code): self
+    public function withHandler($ch): self
     {
         $that = $this->blueprinted();
-        $that->i['code'] = $code;
+        $that->i['curl'] = $ch;
         return $that;
     }
     
     /**
      * @inheritDoc
      */
-    public function withHeaders(array $hdrs): self
+    public function withHeaders(HeadersInterface $hdrs): self
     {
         $that = $this->blueprinted();
         $that->i['hdrs'] = $hdrs;
@@ -70,21 +71,21 @@ final class Response implements ResponseInterface
      * @inheritDoc
      * @throws InvalidArgumentException
      */
-    public function code(): int
+    public function handler()
     {
-        if (!isset($this->i['code'])) {
-            throw new InvalidArgumentException("`code` is not defined");
+        if (!isset($this->i['curl'])) {
+            throw new InvalidArgumentException("`handler` is not defined");
         }
-        return $this->i['code'];
+        return $this->i['curl'];
     }
     
     /**
      * @inheritDoc
      * @throws InvalidArgumentException
      */
-    public function headers(): array
+    public function headers(): HeadersInterface
     {
-        if (!isset($this->i['code'])) {
+        if (!isset($this->i['headers'])) {
             throw new InvalidArgumentException("`headers` are not defined");
         }
         return $this->i['headers'];

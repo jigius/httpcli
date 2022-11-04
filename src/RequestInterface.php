@@ -9,6 +9,7 @@ namespace Jigius\Httpcli;
 interface RequestInterface
 {
     /**
+     * Does a request
      * @return ResponseInterface
      */
     public function processed(): ResponseInterface;

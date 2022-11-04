@@ -19,15 +19,15 @@ interface ResponseInterface extends Type\ResponseInterface
     
     /**
      * Defines headers of a response
-     * @param array $hdrs
+     * @param Type\HeadersInterface $hdrs
      * @return ResponseInterface
      */
-    public function withHeaders(array $hdrs): ResponseInterface;
+    public function withHeaders(Type\HeadersInterface $hdrs): ResponseInterface;
     
     /**
      * Defines the code of a response
-     * @param int $code
+     * @param resource $ch
      * @return ResponseInterface
      */
-    public function withCode(int $code): ResponseInterface;
+    public function withHandler($ch): ResponseInterface;
 }

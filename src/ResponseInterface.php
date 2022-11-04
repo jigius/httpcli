@@ -16,13 +16,13 @@ interface ResponseInterface
     
     /**
      * Returns headers od a response
-     * @return array
+     * @return HeadersInterface
      */
-    public function headers(): array;
+    public function headers(): HeadersInterface;
     
     /**
-     * Returns the code of a response
-     * @return int
+     * Returns the CURL handler has been used for a request
+     * @return resource
      */
-    public function code(): int;
+    public function handler();
 }

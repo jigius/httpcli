@@ -3,6 +3,9 @@
 namespace Jigius\Httpcli\Curl;
 
 use InvalidArgumentException;
+use Jigius\Httpcli\Header;
+use Jigius\Httpcli\HeaderInterface;
+use Jigius\Httpcli\HeadersInterface;
 use RuntimeException;
 
 /**
@@ -44,10 +47,10 @@ final class Request implements RequestInterface
     /**
      * @inheritDoc
      */
-    public function withHeaders(array $hdrs): self
+    public function withHeaders(HeadersInterface $hdrs): self
     {
         $that = $this->blueprinted();
-        $that->i['headers'] = array_merge($that->i['headers'], $hdrs);
+        $that->i['headers'] = $hdrs;
         return $that;
     }
     
@@ -133,24 +136,49 @@ final class Request implements RequestInterface
             throw new InvalidArgumentException("`curlHandler` value has an invalid type");
         }
         $ch = $this->i['curlHandler'];
-        if (!empty($this->hdrs)) {
-            $this->curlSetOpt($ch, CURLOPT_HTTPHEADER, $this->hdrs);
-            $this->curlSetOpt($ch, CURLOPT_HEADER, true);
-            $this->curlSetOpt($ch, CURLOPT_RETURNTRANSFER, true);
-        }
-        $this->curlSetOpt($ch, CURLOPT_URL, $this->url());
-        $hdrsResp = [];
-        $this->curlSetOpt($ch, CURLOPT_HEADERFUNCTION,
-            function($curl, $header) use (&$hdrsResp) {
-                $len = strlen($header);
-                $header = explode(':', $header, 2);
-                if (count($header) < 2) {
-                    /* ignoring invalid headers */
-                    return $len;
-                }
-                $headers[strtolower(trim($header[0]))][] = trim($header[1]);
-                return $len;
+        if (isset($this->i['headers'])) {
+            $rqHdrs =
+                (function (HeadersInterface $hdrs): array {
+                    $res = [];
+                    $hdrs->each(function (HeaderInterface $h) use (&$res) {
+                        $res[] = $h->name() . "=" . implode("\r\n", $h->values());
+                    });
+                    return $res;
+                }) ($this->i['headers']);
+            if (!empty($rqHdrs)) {
+                $this->curlSetOpt($ch, CURLOPT_HTTPHEADER, $rqHdrs);
             }
+        }
+        $this->curlSetOpt($ch, CURLOPT_RETURNTRANSFER, true);
+        $this->curlSetOpt($ch, CURLOPT_HEADER, true);
+        $this->curlSetOpt($ch, CURLOPT_URL, $this->url());
+        $respHdrs = $this->resp->headers();
+        $this->curlSetOpt(
+            $ch,
+            CURLOPT_HEADERFUNCTION,
+            (function (HeadersInterface $hdrs, HeaderInterface $h): callable {
+                return
+                    function($ch, $header) use ($h) {
+                        $len = strlen($header);
+                        $header = explode(':', $header, 2);
+                        if (count($header) < 2) {
+                            /* ignoring invalid headers */
+                            return $len;
+                        }
+                        $hdrs =
+                            $hdrs
+                                ->pushed(
+                                    $h
+                                        ->withName(
+                                            strtolower(trim($header[0]))
+                                        )
+                                        ->withValue(
+                                            trim($header[1])
+                                        )
+                                );
+                        return $len;
+                    };
+            }) ($this->resp->headers(), new Header())
         );
         if (($output = curl_exec($ch)) === false) {
             throw
