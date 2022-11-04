@@ -19,10 +19,4 @@ interface ResponseInterface
      * @return HeadersInterface
      */
     public function headers(): HeadersInterface;
-    
-    /**
-     * Returns the CURL handler has been used for a request
-     * @return resource
-     */
-    public function handler();
 }

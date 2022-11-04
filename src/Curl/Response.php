@@ -3,7 +3,6 @@
 namespace Jigius\Httpcli\Curl;
 
 use Jigius\Httpcli\HeadersInterface;
-use LogicException;
 use InvalidArgumentException;
 
 /**

@@ -2,20 +2,19 @@
 
 namespace Jigius\Httpcli\Curl;
 
-use Jigius\Httpcli\HeadersInterface;
-use Jigius\Httpcli\RequestInterface as RequestType;
+use Jigius\Httpcli;
 
 /**
- * Contract for a instance that is capable to do requests with using of CURL-library
+ * Contract for an instance that is capable to do requests with using of CURL-library
  */
-interface RequestInterface extends RequestType
+interface RequestInterface extends Httpcli\RequestInterface
 {
     /**
      * Defines headers for URL is going to request
-     * @param HeadersInterface $hdrs
+     * @param Httpcli\HeadersInterface $hdrs
      * @return RequestInterface
      */
-    public function withHeaders(HeadersInterface $hdrs): RequestInterface;
+    public function withHeaders(Httpcli\HeadersInterface $hdrs): RequestInterface;
     
     /**
      * Defines a scheme for URL is going to request

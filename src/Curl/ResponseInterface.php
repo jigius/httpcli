@@ -2,13 +2,13 @@
 
 namespace Jigius\Httpcli\Curl;
 
-use Jigius\Httpcli as Type;
+use Jigius\Httpcli;
 
 /**
  * Interface ResponseInterface
  * @package Jigius\Httpcli
  */
-interface ResponseInterface extends Type\ResponseInterface
+interface ResponseInterface extends Httpcli\ResponseInterface
 {
     /**
      * Defines the content of a body
@@ -19,10 +19,10 @@ interface ResponseInterface extends Type\ResponseInterface
     
     /**
      * Defines headers of a response
-     * @param Type\HeadersInterface $hdrs
+     * @param Httpcli\HeadersInterface $hdrs
      * @return ResponseInterface
      */
-    public function withHeaders(Type\HeadersInterface $hdrs): ResponseInterface;
+    public function withHeaders(Httpcli\HeadersInterface $hdrs): ResponseInterface;
     
     /**
      * Defines the code of a response
@@ -30,4 +30,10 @@ interface ResponseInterface extends Type\ResponseInterface
      * @return ResponseInterface
      */
     public function withHandler($ch): ResponseInterface;
+    
+    /**
+     * Returns the CURL handler has been used for a request
+     * @return resource
+     */
+    public function handler();
 }

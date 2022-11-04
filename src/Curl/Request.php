@@ -6,28 +6,19 @@ use Jigius\Httpcli;
 use RuntimeException;
 use InvalidArgumentException;
 
-/**
- *
- */
 final class Request implements RequestInterface
 {
     /**
      * @var array
      */
     private array $i;
-    /**
-     * @var ResponseInterface
-     */
-    private ResponseInterface $resp;
     
     /**
      * Cntr
-     * @param ResponseInterface $r
      * @param Httpcli\HeadersInterface|null $hdrs
      */
-    public function __construct(ResponseInterface $r, ?Httpcli\HeadersInterface $hdrs = null)
+    public function __construct(?Httpcli\HeadersInterface $hdrs = null)
     {
-        $this->resp = $r;
         $this->i = [
             'headers' => $hdrs ?? new Httpcli\Headers(),
             'scheme' => "https"
@@ -127,8 +118,9 @@ final class Request implements RequestInterface
     /**
      * @inheritDoc
      */
-    public function processed(): ResponseInterface
+    public function processed(?ResponseInterface $resp = null): ResponseInterface
     {
+        $resp = $resp ?? new Response();
         if (!isset($this->i['curl'])) {
             throw new InvalidArgumentException("`handler` is not defined");
         }
@@ -151,7 +143,7 @@ final class Request implements RequestInterface
         $this->curlSetOpt($ch, CURLOPT_RETURNTRANSFER, true);
         $this->curlSetOpt($ch, CURLOPT_HEADER, true);
         $this->curlSetOpt($ch, CURLOPT_URL, $this->url());
-        $respHdrs = $this->resp->headers();
+        $respHdrs = $resp->headers();
         $this->curlSetOpt(
             $ch,
             CURLOPT_HEADERFUNCTION,
@@ -191,8 +183,7 @@ final class Request implements RequestInterface
                 );
         }
         return
-            $this
-                ->resp
+            $resp
                 ->withBody($output)
                 ->withHeaders($respHdrs)
                 ->withHandler($ch);
@@ -204,7 +195,7 @@ final class Request implements RequestInterface
      */
     public function blueprinted(): self
     {
-        $that = new self($this->resp);
+        $that = new self();
         $that->i = $this->i;
         return $that;
     }

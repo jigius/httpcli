@@ -10,7 +10,8 @@ interface RequestInterface
 {
     /**
      * Does a request
+     * @param ResponseInterface $resp
      * @return ResponseInterface
      */
-    public function processed(): ResponseInterface;
+    public function processed(ResponseInterface $resp): ResponseInterface;
 }
