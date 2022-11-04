@@ -3,6 +3,7 @@
 namespace Jigius\Httpcli\Curl;
 
 use Jigius\Httpcli;
+use Jigius\Httpcli\HeadersInterface;
 use RuntimeException;
 use InvalidArgumentException;
 
@@ -12,15 +13,25 @@ final class Request implements RequestInterface
      * @var array
      */
     private array $i;
+    /**
+     * @var ResponseInterface|null
+     */
+    private ?ResponseInterface $resp;
+    /**
+     * @var HeadersInterface
+     */
+    private HeadersInterface $hdrs;
     
     /**
      * Cntr
-     * @param Httpcli\HeadersInterface|null $hdrs
+     * @param HeadersInterface|null $hdrs
+     * @param ResponseInterface|null $resp
      */
-    public function __construct(?Httpcli\HeadersInterface $hdrs = null)
+    public function __construct(?Httpcli\HeadersInterface $hdrs = null, ?ResponseInterface $resp = null)
     {
+        $this->resp = $resp;
+        $this->hdrs = $hdrs ?? new Httpcli\Headers();
         $this->i = [
-            'headers' => $hdrs ?? new Httpcli\Headers(),
             'scheme' => "https"
         ];
     }
@@ -118,7 +129,7 @@ final class Request implements RequestInterface
     /**
      * @inheritDoc
      */
-    public function processed(?ResponseInterface $resp = null): ResponseInterface
+    public function processed(): ResponseInterface
     {
         $resp = $resp ?? new Response();
         if (!isset($this->i['curl'])) {
@@ -143,7 +154,7 @@ final class Request implements RequestInterface
         $this->curlSetOpt($ch, CURLOPT_RETURNTRANSFER, true);
         $this->curlSetOpt($ch, CURLOPT_HEADER, true);
         $this->curlSetOpt($ch, CURLOPT_URL, $this->url());
-        $respHdrs = $resp->headers();
+        $respHdrs = $this->resp->headers();
         $this->curlSetOpt(
             $ch,
             CURLOPT_HEADERFUNCTION,
@@ -183,7 +194,8 @@ final class Request implements RequestInterface
                 );
         }
         return
-            $resp
+            $this
+                ->resp
                 ->withBody($output)
                 ->withHeaders($respHdrs)
                 ->withHandler($ch);
@@ -195,7 +207,7 @@ final class Request implements RequestInterface
      */
     public function blueprinted(): self
     {
-        $that = new self();
+        $that = new self($this->hdrs, $this->resp);
         $that->i = $this->i;
         return $that;
     }
