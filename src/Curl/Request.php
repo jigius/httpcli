@@ -29,7 +29,7 @@ final class Request implements RequestInterface
      */
     public function __construct(?Httpcli\HeadersInterface $hdrs = null, ?ResponseInterface $resp = null)
     {
-        $this->resp = $resp;
+        $this->resp = $resp ?? new Response();
         $this->hdrs = $hdrs ?? new Httpcli\Headers();
         $this->i = [
             'scheme' => "https"
@@ -131,7 +131,6 @@ final class Request implements RequestInterface
      */
     public function processed(): ResponseInterface
     {
-        $resp = $resp ?? new Response();
         if (!isset($this->i['curl'])) {
             throw new InvalidArgumentException("`handler` is not defined");
         }
@@ -150,15 +149,15 @@ final class Request implements RequestInterface
             if (!empty($rqHdrs)) {
                 $this->curlSetOpt($ch, CURLOPT_HTTPHEADER, $rqHdrs);
             }
-        }) ($ch, $this->i['headers']);
+        }) ($ch, $this->hdrs);
         $this->curlSetOpt($ch, CURLOPT_RETURNTRANSFER, true);
-        $this->curlSetOpt($ch, CURLOPT_HEADER, true);
+        $this->curlSetOpt($ch, CURLOPT_HEADER, false);
         $this->curlSetOpt($ch, CURLOPT_URL, $this->url());
         $respHdrs = $this->resp->headers();
         $this->curlSetOpt(
             $ch,
             CURLOPT_HEADERFUNCTION,
-            (function (Httpcli\HeadersInterface $hdrs, Httpcli\HeaderInterface $h): callable {
+            (function (Httpcli\HeadersInterface &$hdrs, Httpcli\HeaderInterface $h): callable {
                 return
                     function($ch, $header) use ($h, &$hdrs) {
                         $len = strlen($header);
@@ -258,20 +257,11 @@ final class Request implements RequestInterface
             $res[] = ":{$this->i['port']}";
         }
         if (isset($this->i['path'])) {
-            $res[] = urlencode($this->i['path']);
+            $res[] = $this->i['path'];
         }
         if (!empty($this->i['params'])) {
             $res[] = "?";
-            $res[] =
-                implode(
-                    "&",
-                    array_map(
-                        function ($key, $value): string {
-                            return urlencode($key) . "=" .urlencode($value);
-                        },
-                        $this->i['params']
-                    )
-                );
+            $res[] = implode("&", $this->i['params']);
         }
         return implode("", $res);
     }

@@ -2,6 +2,7 @@
 
 namespace Jigius\Httpcli\Curl;
 
+use Jigius\Httpcli\Headers;
 use Jigius\Httpcli\HeadersInterface;
 use InvalidArgumentException;
 
@@ -15,12 +16,17 @@ final class Response implements ResponseInterface
      * @var array
      */
     private array $i;
-
+    /**
+     * @var HeadersInterface
+     */
+    private HeadersInterface $hdrs;
+    
     /**
      * VanillaResponse constructor.
      */
-    public function __construct()
+    public function __construct(?HeadersInterface $hdrs = null)
     {
+        $this->hdrs = $hdrs ?? new Headers();
         $this->i = [];
     }
     
@@ -62,7 +68,7 @@ final class Response implements ResponseInterface
     public function withHeaders(HeadersInterface $hdrs): self
     {
         $that = $this->blueprinted();
-        $that->i['hdrs'] = $hdrs;
+        $that->hdrs = $hdrs;
         return $that;
     }
     
@@ -80,14 +86,10 @@ final class Response implements ResponseInterface
     
     /**
      * @inheritDoc
-     * @throws InvalidArgumentException
      */
     public function headers(): HeadersInterface
     {
-        if (!isset($this->i['headers'])) {
-            throw new InvalidArgumentException("`headers` are not defined");
-        }
-        return $this->i['headers'];
+        return $this->hdrs;
     }
     
     /**
@@ -96,7 +98,7 @@ final class Response implements ResponseInterface
      */
     public function blueprinted(): self
     {
-        $that = $this->blueprinted();
+        $that = new self($this->hdrs);
         $that->i = $this->i;
         return $that;
     }
