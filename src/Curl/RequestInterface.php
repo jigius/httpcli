@@ -2,6 +2,7 @@
 
 namespace Jigius\Httpcli\Curl;
 
+use Jigius\Httpcli\HeadersInterface;
 use Jigius\Httpcli\RequestInterface as RequestType;
 
 /**
@@ -11,10 +12,10 @@ interface RequestInterface extends RequestType
 {
     /**
      * Defines headers for URL is going to request
-     * @param array $hdrs
+     * @param HeadersInterface $hdrs
      * @return RequestInterface
      */
-    public function withHeaders(array $hdrs): RequestInterface;
+    public function withHeaders(HeadersInterface $hdrs): RequestInterface;
     
     /**
      * Defines a scheme for URL is going to request
@@ -67,8 +68,8 @@ interface RequestInterface extends RequestType
     
     /**
      * Defines a CURL-handler
-     * @param $handler resource
+     * @param $curl resource
      * @return RequestInterface
      */
-    public function withHandler($handler): RequestInterface;
+    public function withHandler($curl): RequestInterface;
 }

@@ -2,11 +2,9 @@
 
 namespace Jigius\Httpcli\Curl;
 
-use InvalidArgumentException;
-use Jigius\Httpcli\Header;
-use Jigius\Httpcli\HeaderInterface;
-use Jigius\Httpcli\HeadersInterface;
+use Jigius\Httpcli;
 use RuntimeException;
+use InvalidArgumentException;
 
 /**
  *
@@ -24,12 +22,14 @@ final class Request implements RequestInterface
     
     /**
      * Cntr
+     * @param ResponseInterface $r
+     * @param Httpcli\HeadersInterface|null $hdrs
      */
-    public function __construct(ResponseInterface $r)
+    public function __construct(ResponseInterface $r, ?Httpcli\HeadersInterface $hdrs = null)
     {
         $this->resp = $r;
         $this->i = [
-            'headers' => [],
+            'headers' => $hdrs ?? new Httpcli\Headers(),
             'scheme' => "https"
         ];
     }
@@ -47,7 +47,7 @@ final class Request implements RequestInterface
     /**
      * @inheritDoc
      */
-    public function withHeaders(HeadersInterface $hdrs): self
+    public function withHeaders(Httpcli\HeadersInterface $hdrs): self
     {
         $that = $this->blueprinted();
         $that->i['headers'] = $hdrs;
@@ -117,10 +117,10 @@ final class Request implements RequestInterface
     /**
      * @inheritDoc
      */
-    public function withCurlHdlr($handler): self
+    public function withHandler($curl): self
     {
         $that = $this->blueprinted();
-        $that->i['curlHandler'] = $handler;
+        $that->i['curl'] = $curl;
         return $that;
     }
     
@@ -129,26 +129,25 @@ final class Request implements RequestInterface
      */
     public function processed(): ResponseInterface
     {
-        if (!isset($this->i['curlHandler'])) {
-            throw new InvalidArgumentException("`curlHandler` is not defined");
+        if (!isset($this->i['curl'])) {
+            throw new InvalidArgumentException("`handler` is not defined");
         }
-        if (!is_resource($this->i['curlHandler'])) {
-            throw new InvalidArgumentException("`curlHandler` value has an invalid type");
+        if (!is_resource($this->i['curl'])) {
+            throw new InvalidArgumentException("`handler` value has an invalid type");
         }
-        $ch = $this->i['curlHandler'];
-        if (isset($this->i['headers'])) {
-            $rqHdrs =
-                (function (HeadersInterface $hdrs): array {
-                    $res = [];
-                    $hdrs->each(function (HeaderInterface $h) use (&$res) {
-                        $res[] = $h->name() . "=" . implode("\r\n", $h->values());
-                    });
-                    return $res;
-                }) ($this->i['headers']);
+        $ch = $this->i['curl'];
+        (function ($ch, Httpcli\HeadersInterface $hdrs) {
+            /**
+             * Appends request headers
+             */
+            $rqHdrs = [];
+            $hdrs->each(function (Httpcli\HeaderInterface $h) use (&$rqHdrs) {
+                $rqHdrs[] = $h->name() . "=" . $h->value();
+            });
             if (!empty($rqHdrs)) {
                 $this->curlSetOpt($ch, CURLOPT_HTTPHEADER, $rqHdrs);
             }
-        }
+        }) ($ch, $this->i['headers']);
         $this->curlSetOpt($ch, CURLOPT_RETURNTRANSFER, true);
         $this->curlSetOpt($ch, CURLOPT_HEADER, true);
         $this->curlSetOpt($ch, CURLOPT_URL, $this->url());
@@ -156,9 +155,9 @@ final class Request implements RequestInterface
         $this->curlSetOpt(
             $ch,
             CURLOPT_HEADERFUNCTION,
-            (function (HeadersInterface $hdrs, HeaderInterface $h): callable {
+            (function (Httpcli\HeadersInterface $hdrs, Httpcli\HeaderInterface $h): callable {
                 return
-                    function($ch, $header) use ($h) {
+                    function($ch, $header) use ($h, &$hdrs) {
                         $len = strlen($header);
                         $header = explode(':', $header, 2);
                         if (count($header) < 2) {
@@ -170,7 +169,7 @@ final class Request implements RequestInterface
                                 ->pushed(
                                     $h
                                         ->withName(
-                                            strtolower(trim($header[0]))
+                                            trim($header[0])
                                         )
                                         ->withValue(
                                             trim($header[1])
@@ -178,7 +177,7 @@ final class Request implements RequestInterface
                                 );
                         return $len;
                     };
-            }) ($this->resp->headers(), new Header())
+            }) ($respHdrs, new Httpcli\Header())
         );
         if (($output = curl_exec($ch)) === false) {
             throw
@@ -194,11 +193,9 @@ final class Request implements RequestInterface
         return
             $this
                 ->resp
-                ->withContent($output)
-                ->withHeaders($hdrsResp)
-                ->withCode(
-                    curl_getinfo($ch, CURLINFO_HTTP_CODE)
-                );
+                ->withBody($output)
+                ->withHeaders($respHdrs)
+                ->withHandler($ch);
     }
     
     /**
