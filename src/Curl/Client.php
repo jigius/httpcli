@@ -39,7 +39,7 @@ final class Client implements ClientInterface
     {
         $rqHdrs = [];
         $h->each(function (Httpcli\HeaderInterface $h) use (&$rqHdrs) {
-            $rqHdrs[] = $h->name() . "=" . $h->value();
+            $rqHdrs[] = $h->name() . ": " . $h->value();
         });
         $that = $this->blueprinted();
         if (!empty($rqHdrs)) {
