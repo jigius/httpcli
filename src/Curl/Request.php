@@ -12,6 +12,7 @@
 namespace Jigius\Httpcli\Curl;
 
 use Jigius\Httpcli;
+use Jigius\Httpcli\HeadersInterface;
 
 /**
  * Trivial implementation of Request contract
@@ -19,9 +20,9 @@ use Jigius\Httpcli;
 final class Request implements RequestInterface
 {
     /**
-     * @var ResponseInterface
+     * @var Httpcli\ResponseInterface
      */
-    private ResponseInterface $resp;
+    private Httpcli\ResponseInterface $resp;
     /**
      * @var array
      */
@@ -29,9 +30,9 @@ final class Request implements RequestInterface
     
     /**
      * Cntr
-     * @param ResponseInterface|null $resp
+     * @param Httpcli\ResponseInterface|null $resp
      */
-    public function __construct(?ResponseInterface $resp = null)
+    public function __construct(?Httpcli\ResponseInterface $resp = null)
     {
         $this->resp = $resp ?? new Response();
         $this->i = [
@@ -72,6 +73,14 @@ final class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    public function headers(): HeadersInterface
+    {
+        return $this->i['hdrs'];
+    }
+    
+    /**
+     * @inheritDoc
+     */
     public function withClient(ClientInterface $client): self
     {
         $that = $this->blueprinted();
@@ -90,7 +99,7 @@ final class Request implements RequestInterface
     /**
      * @inheritDoc
      */
-    public function processed(): ResponseInterface
+    public function processed(): Httpcli\ResponseInterface
     {
         $respHdrs = $this->resp->headers();
         $client =

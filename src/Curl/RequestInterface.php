@@ -42,10 +42,4 @@ interface RequestInterface extends Httpcli\RequestInterface
      * @return ClientInterface
      */
     public function client(): ClientInterface;
-    
-    /**
-     * @inheritdoc
-     * @return ResponseInterface
-     */
-    public function processed(): ResponseInterface;
 }

@@ -26,9 +26,7 @@ final class Uri implements UriInterface
      */
     public function __construct()
     {
-        $this->i = [
-            'scheme' => "http"
-        ];
+        $this->i = [];
     }
     
     /**
@@ -106,10 +104,11 @@ final class Uri implements UriInterface
      */
     public function uri(): string
     {
-        $res = [
-            $this->i['scheme'],
-            "://"
-        ];
+        $res = [];
+        if (isset($this->i['scheme'])) {
+            $res[] = $this->i['scheme'];
+            $res[] = "://";
+        }
         if (isset($this->i['login'])) {
             $res[] = $this->i['login'];
             if ($this->i['password']) {
