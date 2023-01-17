@@ -32,17 +32,4 @@ interface ResponseInterface extends Httpcli\ResponseInterface
      * @return ResponseInterface
      */
     public function withHeaders(Httpcli\HeadersInterface $hdrs): ResponseInterface;
-    
-    /**
-     * Defines a client was used for a request
-     * @param ClientInterface $client
-     * @return ResponseInterface
-     */
-    public function withClient(ClientInterface $client): ResponseInterface;
-    
-    /**
-     * Returns the CURL handler has been used for a request
-     * @return ClientInterface
-     */
-    public function client(): ClientInterface;
 }

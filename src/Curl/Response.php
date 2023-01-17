@@ -32,7 +32,6 @@ final class Response implements ResponseInterface
     {
         $this->i = [
             'hdrs' => new Httpcli\Headers(),
-            'client' => new ClientDumb(),
             'body' => null
         ];
     }
@@ -59,30 +58,11 @@ final class Response implements ResponseInterface
     /**
      * @inheritDoc
      */
-    public function withClient(ClientInterface $client): self
-    {
-        $that = $this->blueprinted();
-        $that->i['client'] = $client;
-        return $that;
-    }
-    
-    /**
-     * @inheritDoc
-     */
     public function withHeaders(Httpcli\HeadersInterface $hdrs): self
     {
         $that = $this->blueprinted();
         $that->i['hdrs'] = $hdrs;
         return $that;
-    }
-    
-    /**
-     * @inheritDoc
-     * @throws InvalidArgumentException
-     */
-    public function client(): ClientInterface
-    {
-        return $this->i['client'];
     }
     
     /**

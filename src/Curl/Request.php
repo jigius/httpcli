@@ -23,17 +23,9 @@ final class Request implements RequestInterface
      */
     private ResponseInterface $resp;
     /**
-     * @var Httpcli\HeadersInterface
+     * @var array
      */
-    private Httpcli\HeadersInterface $hdrs;
-    /**
-     * @var Httpcli\UriInterface
-     */
-    private Httpcli\UriInterface $uri;
-    /**
-     * @var ClientInterface
-     */
-    private ClientInterface $client;
+    private array $i;
     
     /**
      * Cntr
@@ -42,9 +34,11 @@ final class Request implements RequestInterface
     public function __construct(?ResponseInterface $resp = null)
     {
         $this->resp = $resp ?? new Response();
-        $this->hdrs = new Httpcli\Headers();
-        $this->uri = new Httpcli\Uri();
-        $this->client = new ClientDumb();
+        $this->i = [
+            'hdrs' => new Httpcli\Headers(),
+            'uri' => new Httpcli\Uri(),
+            'client' => new ClientDumb()
+        ];
     }
     
     /**
@@ -53,7 +47,7 @@ final class Request implements RequestInterface
     public function withUri(Httpcli\UriInterface $uri): self
     {
         $that = $this->blueprinted();
-        $that->uri = $uri;
+        $that->i['uri'] = $uri;
         return $that;
     }
     
@@ -62,7 +56,7 @@ final class Request implements RequestInterface
      */
     public function uri(): Httpcli\UriInterface
     {
-        return $this->uri;
+        return $this->i['uri'];
     }
     
     /**
@@ -71,7 +65,7 @@ final class Request implements RequestInterface
     public function withHeaders(Httpcli\HeadersInterface $hdrs): self
     {
         $that = $this->blueprinted();
-        $that->hdrs = $hdrs;
+        $that->i['hdrs'] = $hdrs;
         return $that;
     }
     
@@ -81,8 +75,16 @@ final class Request implements RequestInterface
     public function withClient(ClientInterface $client): self
     {
         $that = $this->blueprinted();
-        $that->client = $client;
+        $that->i['client'] = $client;
         return $that;
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function client(): ClientInterface
+    {
+        return $this->i['client'];
     }
     
     /**
@@ -93,11 +95,11 @@ final class Request implements RequestInterface
         $respHdrs = $this->resp->headers();
         $client =
             $this
-                ->client
-                ->withHeaders($this->hdrs)
+                ->i['client']
+                ->withHeaders($this->i['hdrs'])
                 ->withOption(CURLOPT_RETURNTRANSFER, true)
                 ->withOption(CURLOPT_HEADER, false)
-                ->withOption(CURLOPT_URL, $this->uri->uri())
+                ->withOption(CURLOPT_URL, $this->i['uri']->uri())
                 ->withOption(
                     CURLOPT_HEADERFUNCTION,
                     (function (Httpcli\HeadersInterface &$hdrs, Httpcli\HeaderInterface $h): callable {
@@ -125,12 +127,7 @@ final class Request implements RequestInterface
                     }) ($respHdrs, new Httpcli\Header())
                 );
         $output = $client->execute();
-        return
-            $this
-                ->resp
-                ->withBody($output)
-                ->withHeaders($respHdrs)
-                ->withClient($this->client);
+        return $this->resp->withBody($output)->withHeaders($respHdrs);
     }
     
     /**
@@ -140,9 +137,7 @@ final class Request implements RequestInterface
     public function blueprinted(): self
     {
         $that = new self($this->resp);
-        $that->uri = $this->uri;
-        $that->hdrs = $this->hdrs;
-        $that->client = $this->client;
+        $that->i = $this->i;
         return $that;
     }
 }

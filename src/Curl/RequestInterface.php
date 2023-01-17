@@ -47,6 +47,12 @@ interface RequestInterface extends Httpcli\RequestInterface
     public function withClient(ClientInterface $client): RequestInterface;
     
     /**
+     * Returns a current defined client
+     * @return ClientInterface
+     */
+    public function client(): ClientInterface;
+    
+    /**
      * @inheritdoc
      * @return ResponseInterface
      */
