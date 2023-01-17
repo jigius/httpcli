@@ -19,25 +19,16 @@ use Jigius\Httpcli;
 interface RequestInterface extends Httpcli\RequestInterface
 {
     /**
-     * Defines headers for URL is going to request
-     * @param Httpcli\HeadersInterface $hdrs
+     * @inheritdoc
      * @return RequestInterface
      */
     public function withHeaders(Httpcli\HeadersInterface $hdrs): RequestInterface;
     
-    
     /**
-     * Defines URI is using for a request
-     * @param Httpcli\UriInterface $uri
+     * @inheritdoc
      * @return RequestInterface
      */
     public function withUri(Httpcli\UriInterface $uri): RequestInterface;
-    
-    /**
-     * Returns a current URI instance
-     * @return Httpcli\UriInterface
-     */
-    public function uri(): Httpcli\UriInterface;
     
     /**
      * Defines a client which makes a connection via CURL

@@ -18,7 +18,7 @@ use InvalidArgumentException;
  * Class Response
  * @package Jigius\Httpcli
  */
-final class Response implements ResponseInterface
+final class Response implements Httpcli\ResponseInterface
 {
     /**
      * @var array

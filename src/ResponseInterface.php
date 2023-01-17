@@ -28,4 +28,18 @@ interface ResponseInterface
      * @return HeadersInterface
      */
     public function headers(): HeadersInterface;
+    
+    /**
+     * Defines the content of a body
+     * @param string $streamOfBytes
+     * @return ResponseInterface
+     */
+    public function withBody(string &$streamOfBytes): ResponseInterface;
+    
+    /**
+     * Defines headers of a response
+     * @param HeadersInterface $hdrs
+     * @return ResponseInterface
+     */
+    public function withHeaders(HeadersInterface $hdrs): ResponseInterface;
 }

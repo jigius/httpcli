@@ -12,8 +12,7 @@
 namespace Jigius\Httpcli;
 
 /**
- * Interface RequestInterface
- * @package Jigius\Httpcli
+ * Contract Request
  */
 interface RequestInterface
 {
@@ -22,4 +21,30 @@ interface RequestInterface
      * @return ResponseInterface
      */
     public function processed(): ResponseInterface;
+    
+    /**
+     * Defines headers for URL is going to request
+     * @param HeadersInterface $hdrs
+     * @return RequestInterface
+     */
+    public function withHeaders(HeadersInterface $hdrs): RequestInterface;
+    
+    /**
+     * Returns defined headers
+     * @return HeadersInterface
+     */
+    public function headers(): HeadersInterface;
+    
+    /**
+     * Defines URI is using for a request
+     * @param UriInterface $uri
+     * @return RequestInterface
+     */
+    public function withUri(UriInterface $uri): RequestInterface;
+    
+    /**
+     * Returns a current URI instance
+     * @return UriInterface
+     */
+    public function uri(): UriInterface;
 }
