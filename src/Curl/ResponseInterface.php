@@ -14,8 +14,8 @@ namespace Jigius\Httpcli\Curl;
 use Jigius\Httpcli;
 
 /**
- * Interface ResponseInterface
- * @package Jigius\Httpcli
+ * Contract for an instance that is capable to store data that
+ * has been gotten on a request with using of CURL-library
  */
 interface ResponseInterface extends Httpcli\ResponseInterface
 {
@@ -34,15 +34,15 @@ interface ResponseInterface extends Httpcli\ResponseInterface
     public function withHeaders(Httpcli\HeadersInterface $hdrs): ResponseInterface;
     
     /**
-     * Defines the code of a response
-     * @param resource $ch
+     * Defines a client was used for a request
+     * @param ClientInterface $client
      * @return ResponseInterface
      */
-    public function withHandler($ch): ResponseInterface;
+    public function withClient(ClientInterface $client): ResponseInterface;
     
     /**
      * Returns the CURL handler has been used for a request
-     * @return resource
+     * @return ClientInterface
      */
-    public function handler();
+    public function client(): ClientInterface;
 }

@@ -24,18 +24,17 @@ final class Response implements ResponseInterface
      * @var array
      */
     private array $i;
-    /**
-     * @var Httpcli\HeadersInterface
-     */
-    private Httpcli\HeadersInterface $hdrs;
     
     /**
-     * VanillaResponse constructor.
+     * Cntr
      */
-    public function __construct(?Httpcli\HeadersInterface $hdrs = null)
+    public function __construct()
     {
-        $this->hdrs = $hdrs ?? new Httpcli\Headers();
-        $this->i = [];
+        $this->i = [
+            'hdrs' => new Httpcli\Headers(),
+            'client' => new ClientDumb(),
+            'body' => null
+        ];
     }
     
     /**
@@ -44,9 +43,6 @@ final class Response implements ResponseInterface
      */
     public function body(): string
     {
-        if (!isset($this->i)) {
-            throw new InvalidArgumentException("`body` is not defined");
-        }
         return $this->i['body'];
     }
     
@@ -63,10 +59,10 @@ final class Response implements ResponseInterface
     /**
      * @inheritDoc
      */
-    public function withHandler($ch): self
+    public function withClient(ClientInterface $client): self
     {
         $that = $this->blueprinted();
-        $that->i['curl'] = $ch;
+        $that->i['client'] = $client;
         return $that;
     }
     
@@ -76,7 +72,7 @@ final class Response implements ResponseInterface
     public function withHeaders(Httpcli\HeadersInterface $hdrs): self
     {
         $that = $this->blueprinted();
-        $that->hdrs = $hdrs;
+        $that->i['hdrs'] = $hdrs;
         return $that;
     }
     
@@ -84,12 +80,9 @@ final class Response implements ResponseInterface
      * @inheritDoc
      * @throws InvalidArgumentException
      */
-    public function handler()
+    public function client(): ClientInterface
     {
-        if (!isset($this->i['curl'])) {
-            throw new InvalidArgumentException("`handler` is not defined");
-        }
-        return $this->i['curl'];
+        return $this->i['client'];
     }
     
     /**
@@ -97,7 +90,7 @@ final class Response implements ResponseInterface
      */
     public function headers(): Httpcli\HeadersInterface
     {
-        return $this->hdrs;
+        return $this->i['hdrs'];
     }
     
     /**
@@ -106,7 +99,7 @@ final class Response implements ResponseInterface
      */
     public function blueprinted(): self
     {
-        $that = new self($this->hdrs);
+        $that = new self();
         $that->i = $this->i;
         return $that;
     }
