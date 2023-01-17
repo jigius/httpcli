@@ -43,4 +43,10 @@ interface ClientInterface
      * @return void
      */
     public function close(): void;
+    
+    /**
+     * Returns a curl-resource
+     * @return resource
+     */
+    public function resource();
 }

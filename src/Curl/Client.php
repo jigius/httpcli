@@ -119,6 +119,14 @@ final class Client implements ClientInterface
     }
     
     /**
+     * @inheritdoc
+     */
+    public function resource()
+    {
+        return $this->resource;
+    }
+    
+    /**
      * Clones the instance
      * @return $this
      */

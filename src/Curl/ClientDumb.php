@@ -70,4 +70,13 @@ final class ClientDumb implements ClientInterface
     {
         throw new LogicException("the instance is a dumb :(");
     }
+    
+    /**
+     * @inheritdoc
+     * @throws LogicException
+     */
+    public function resource()
+    {
+        throw new LogicException("the instance is a dumb :(");
+    }
 }
