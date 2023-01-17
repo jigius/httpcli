@@ -125,7 +125,12 @@ final class Request implements RequestInterface
                     }) ($respHdrs, new Httpcli\Header())
                 );
         $output = $client->execute();
-        return $this->resp->withBody($output)->withHeaders($respHdrs);
+        return
+            $this
+                ->resp
+                ->withBody($output)
+                ->withHeaders($respHdrs)
+                ->withClient($this->client);
     }
     
     /**
