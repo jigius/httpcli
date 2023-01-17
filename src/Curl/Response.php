@@ -1,9 +1,17 @@
 <?php
+/*
+ * This file is part of the jigius/httpcli project
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed in the root of the source code
+ *
+ * @copyright Copyright (c) 2022 Jigius <jigius@gmail.com>
+ * @link https://github.com/jigius/httpcli GitHub
+ */
 
 namespace Jigius\Httpcli\Curl;
 
-use Jigius\Httpcli\Headers;
-use Jigius\Httpcli\HeadersInterface;
+use Jigius\Httpcli;
 use InvalidArgumentException;
 
 /**
@@ -17,16 +25,16 @@ final class Response implements ResponseInterface
      */
     private array $i;
     /**
-     * @var HeadersInterface
+     * @var Httpcli\HeadersInterface
      */
-    private HeadersInterface $hdrs;
+    private Httpcli\HeadersInterface $hdrs;
     
     /**
      * VanillaResponse constructor.
      */
-    public function __construct(?HeadersInterface $hdrs = null)
+    public function __construct(?Httpcli\HeadersInterface $hdrs = null)
     {
-        $this->hdrs = $hdrs ?? new Headers();
+        $this->hdrs = $hdrs ?? new Httpcli\Headers();
         $this->i = [];
     }
     
@@ -65,7 +73,7 @@ final class Response implements ResponseInterface
     /**
      * @inheritDoc
      */
-    public function withHeaders(HeadersInterface $hdrs): self
+    public function withHeaders(Httpcli\HeadersInterface $hdrs): self
     {
         $that = $this->blueprinted();
         $that->hdrs = $hdrs;
@@ -87,7 +95,7 @@ final class Response implements ResponseInterface
     /**
      * @inheritDoc
      */
-    public function headers(): HeadersInterface
+    public function headers(): Httpcli\HeadersInterface
     {
         return $this->hdrs;
     }

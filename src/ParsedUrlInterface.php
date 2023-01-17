@@ -12,14 +12,13 @@
 namespace Jigius\Httpcli;
 
 /**
- * Interface RequestInterface
- * @package Jigius\Httpcli
+ * Makes capable to get uri instance from an url is expressed via string
  */
-interface RequestInterface
+interface ParsedUrlInterface
 {
     /**
-     * Does a request
-     * @return ResponseInterface
+     * @param string $url
+     * @return UriInterface
      */
-    public function processed(): ResponseInterface;
+    public function parsed(string $url): UriInterface;
 }

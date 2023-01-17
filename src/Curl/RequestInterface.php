@@ -1,4 +1,13 @@
 <?php
+/*
+ * This file is part of the jigius/httpcli project
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed in the root of the source code
+ *
+ * @copyright Copyright (c) 2022 Jigius <jigius@gmail.com>
+ * @link https://github.com/jigius/httpcli GitHub
+ */
 
 namespace Jigius\Httpcli\Curl;
 
@@ -16,59 +25,30 @@ interface RequestInterface extends Httpcli\RequestInterface
      */
     public function withHeaders(Httpcli\HeadersInterface $hdrs): RequestInterface;
     
-    /**
-     * Defines a scheme for URL is going to request
-     * @param string $txt
-     * @return RequestInterface
-     */
-    public function withScheme(string $txt): RequestInterface;
     
     /**
-     * Defines a hostname for URL is going to request
-     * @param string $txt
+     * Defines URI is using for a request
+     * @param Httpcli\UriInterface $uri
      * @return RequestInterface
      */
-    public function withHostName(string $txt): RequestInterface;
+    public function withUri(Httpcli\UriInterface $uri): RequestInterface;
     
     /**
-     * Defines a login for URL is going to request
-     * @param string $txt
-     * @return RequestInterface
+     * Returns a current URI instance
+     * @return Httpcli\UriInterface
      */
-    public function withLogin(string $txt): RequestInterface;
+    public function uri(): Httpcli\UriInterface;
     
     /**
-     * Defines a password for URL is going to request
-     * @param string $txt
+     * Defines a client which makes a connection via CURL
+     * @param ClientInterface $client
      * @return RequestInterface
      */
-    public function withPassword(string $txt): RequestInterface;
+    public function withClient(ClientInterface $client): RequestInterface;
     
     /**
-     * Defines a port for URL is going to request
-     * @param int $n
-     * @return RequestInterface
+     * @inheritdoc
+     * @return ResponseInterface
      */
-    public function withPort(int $n): RequestInterface;
-    
-    /**
-     * Defines a path for URL is going to request
-     * @param string $txt
-     * @return RequestInterface
-     */
-    public function withPath(string $txt): RequestInterface;
-    
-    /**
-     * Defines params for URL is going to request
-     * @param array $params
-     * @return RequestInterface
-     */
-    public function withParams(array $params): RequestInterface;
-    
-    /**
-     * Defines a CURL-handler
-     * @param $curl resource
-     * @return RequestInterface
-     */
-    public function withHandler($curl): RequestInterface;
+    public function processed(): ResponseInterface;
 }
