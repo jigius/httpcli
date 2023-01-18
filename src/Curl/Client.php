@@ -89,17 +89,16 @@ final class Client implements ClientInterface
      */
     public function execute()
     {
-        if (($ret = curl_exec($this->resource)) === false) {
-            if (curl_getinfo($this->resource, CURLOPT_RETURNTRANSFER)) {
-                throw
-                    new RuntimeException(
-                        "an error has been occurred in time of the data fetching",
-                        0,
-                        new RuntimeException(curl_error($this->resource), curl_errno($this->resource))
-                    );
-            }
+        $output = curl_exec($this->resource);
+        if (curl_errno($this->resource) !== 0) {
+            throw
+                new RuntimeException(
+                    "an error has been occurred in time of the data fetching",
+                    0,
+                    new RuntimeException(curl_error($this->resource), curl_errno($this->resource))
+                );
         }
-        return $ret;
+        return $output;
     }
     
     /**
