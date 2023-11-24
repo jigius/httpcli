@@ -138,9 +138,9 @@ final class CurlClient implements ClientInterface
         if (!empty($this->hdrs)) {
             curl_setopt($ch, CURLOPT_HTTPHEADER, $this->hdrs);
             curl_setopt($ch, CURLOPT_HEADER, false);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_URL, $this->url());
         }
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $this->url());
         if (($output = curl_exec($ch)) === false) {
             throw
                 new RuntimeException(
