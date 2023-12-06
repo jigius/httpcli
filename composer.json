@@ -7,10 +7,7 @@
         "psr-4": {
             "Jigius\\Httpcli\\": "src/"
 
-        },
-        "files": [
-          "debug.php"
-        ]
+        }
     },
     "authors": [
         {
