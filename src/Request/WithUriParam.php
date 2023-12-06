@@ -1,4 +1,5 @@
 <?php
+
 namespace Jigius\Httpcli\Request;
 
 use Jigius\Httpcli\RequestInterface;
@@ -12,12 +13,12 @@ final class WithUriParam implements RequestInterface
     /**
      * @var RequestInterface
      */
-    private RequestInterface $orig;
+    private $orig;
 
     /**
      * @var string
      */
-    private string $name;
+    private $name;
 
     /**
      * @var mixed

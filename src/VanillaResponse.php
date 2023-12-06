@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 namespace Jigius\Httpcli;
 
@@ -14,7 +13,7 @@ final class VanillaResponse implements ResponseInterface
     /**
      * @var string|null
      */
-    private ?string $i;
+    private $i;
 
     /**
      * VanillaResponse constructor.

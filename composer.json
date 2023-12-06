@@ -6,7 +6,11 @@
     "autoload": {
         "psr-4": {
             "Jigius\\Httpcli\\": "src/"
-        }
+
+        },
+        "files": [
+          "debug.php"
+        ]
     },
     "authors": [
         {
@@ -17,5 +21,8 @@
     "require": {
       "ext-json": "*",
       "ext-curl": "*"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^5.4"
     }
 }

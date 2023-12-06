@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 namespace Jigius\Httpcli\Request;
 
@@ -14,12 +13,12 @@ final class WithHeader implements RequestInterface
     /**
      * @var RequestInterface RequestInterface
      */
-    private RequestInterface $orig;
+    private $orig;
 
     /**
      * @var string
      */
-    private string $h;
+    private $h;
 
     /**
      * WithHeader constructor.
@@ -43,4 +42,3 @@ final class WithHeader implements RequestInterface
         );
     }
 }
-

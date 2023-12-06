@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 namespace Jigius\Httpcli\Request;
 
@@ -14,7 +13,7 @@ final class WithOption implements RequestInterface
     /**
      * @var RequestInterface
      */
-    private RequestInterface $orig;
+    private $orig;
 
     /**
      * @var mixed

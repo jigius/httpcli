@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 namespace Jigius\Httpcli\Request\Client;
 
@@ -16,27 +15,27 @@ final class CurlClient implements ClientInterface
     /**
      * @var array
      */
-    private array $opts;
+    private $opts;
 
     /**
      * @var array
      */
-    private array $hdrs;
+    private $hdrs;
 
     /**
      * @var string
      */
-    private string $h;
+    private $h;
 
     /**
      * @var string
      */
-    private string $uri;
+    private $uri;
 
     /**
      * @var array
      */
-    private array $params;
+    private $params;
 
     /**
      * Curl constructor.
@@ -68,7 +67,7 @@ final class CurlClient implements ClientInterface
     /**
      * @inheritDoc
      */
-    public function withHeader(string $header): self
+    public function withHeader(string $header): ClientInterface
     {
         $obj = $this->blueprinted();
         $obj->hdrs[] = $header;
@@ -78,7 +77,7 @@ final class CurlClient implements ClientInterface
     /**
      * @inheritDoc
      */
-    public function withOption($name, $val): self
+    public function withOption(string $name, $val): ClientInterface
     {
         $obj = $this->blueprinted();
         $obj->opts[$name] = $val;
@@ -88,7 +87,7 @@ final class CurlClient implements ClientInterface
     /**
      * @inheritDoc
      */
-    public function withUriParam(string $name, $val): self
+    public function withUriParam(string $name, string $val): ClientInterface
     {
         $obj = $this->blueprinted();
         $obj->params[$name] = $val;
@@ -98,7 +97,7 @@ final class CurlClient implements ClientInterface
     /**
      * @inheritDoc
      */
-    public function withUri(string $uri): self
+    public function withUri(string $uri): ClientInterface
     {
         $obj = $this->blueprinted();
         $obj->uri = $uri;
@@ -108,7 +107,7 @@ final class CurlClient implements ClientInterface
     /**
      * @inheritDoc
      */
-    public function withHostname(string $hostname): self
+    public function withHostname(string $hostname): ClientInterface
     {
         $obj = $this->blueprinted();
         $obj->h = $hostname;
@@ -126,7 +125,7 @@ final class CurlClient implements ClientInterface
         if (($ch = curl_init()) === false) {
             throw
                 new RuntimeException(
-                    "client initialization is failure: curl_init() returned `false`",
+                    "client initialization is failure: curl_init() returned `false`"
                 );
         }
         array_walk(
